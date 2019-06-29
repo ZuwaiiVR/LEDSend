@@ -66,3 +66,5 @@ Plans
 -----
 - I was thinking of adding normal LAN on SPI at the ESP32, (if it would together with SmartMatrix) WiFi can be unstable and may delay.
 - Making a OBS plugin to do all the scaling and such, I'm not sure if OBS would support such a thing. For now I just drag my capture program on a OBS window source.
+
+![alt text](https://github.com/Dnstje/LEDSend/blob/master/Thim.jpg)
