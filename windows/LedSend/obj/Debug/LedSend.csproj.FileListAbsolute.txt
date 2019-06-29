@@ -1,0 +1,10 @@
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\bin\Debug\LedSend.exe.config
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\bin\Debug\LedSend.exe
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\bin\Debug\LedSend.pdb
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.csprojResolveAssemblyReference.cache
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.Form1.resources
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.Properties.Resources.resources
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.csproj.GenerateResource.Cache
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.exe
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.pdb
+c:\users\appel\documents\visual studio 2015\Projects\LedSend\LedSend\obj\Debug\LedSend.Form2.resources
