@@ -6,7 +6,9 @@ Well I though it was easy to connect them up, well I mistaken, they had a weird 
 
 Progress
 ----
+```
 [x] Finding out Panel mapping for just 1 panel outta two.
 [ ] 104x104 suport? aka 128x128
 [ ] change the output of Smart Library, this panel likes to have one long stroke. clock must shift out 256 times to fill up R1 G1 B1.
 [ ] Mapping.
+```
