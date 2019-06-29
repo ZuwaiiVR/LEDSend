@@ -2,7 +2,7 @@ The LED Panel I'm using is a 52x52 panel, Normally it is a 64x64 panel, but real
 on each line of the screen, we have to send 8bits 8 times, to fill out 64 pixels. however, there are only 52 pixels active, 2 pixels are unconnected.
 I couldnt manage to edit the SmartMatrix(LC) library to do that so I do that in this sketch, since I only want to send video through WiFi/LAN.
 As for the ABCD lines goes the same, but I could manage to fix that by replacing lines in SmartMatrixMultiplexedCommon.h.
-
+```
 #define CONVERT_PANELTYPE_TO_MATRIXROWPAIROFFSET(x) ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 16 : 0) | \
 #define CONVERT_PANELTYPE_TO_MATRIXSCANMOD(x)  ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 16 : 0) | \
 
@@ -10,7 +10,7 @@ to
 
 #define CONVERT_PANELTYPE_TO_MATRIXROWPAIROFFSET(x) ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 13 : 0) | \
 #define CONVERT_PANELTYPE_TO_MATRIXSCANMOD(x)  ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 13 : 0) | \
-
+```
 to view looks like this.
 
 ```
