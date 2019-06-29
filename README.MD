@@ -1,5 +1,5 @@
 The LED Panel I'm using is a 52x52 panel, Normally it is a 64x64 panel, but really confusing.
-on each line of the screen, we have to send 8bits 8 times, to fill out 64 pixels. however, there are only 52 pixels active, 3 pixels are unconnected.
+on each line of the screen, we have to send 8bits 8 times, to fill out 64 pixels. however, there are only 52 pixels active, 2 pixels are unconnected.
 I couldnt manage to edit the SmartMatrix(LC) library to do that so I do that in this sketch, since I only want to send video through WiFi/LAN.
 As for the ABCD lines goes the same, but I could manage to fix that by replacing lines in SmartMatrixMultiplexedCommon.h.
 
