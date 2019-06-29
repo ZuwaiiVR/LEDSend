@@ -1,0 +1,13 @@
+An attempt to control these panels by cheap 3rd party hardware.
+----
+I was able to get one of these modules from my company which had defective pixels.
+Well I though it was easy to connect them up, well I mistaken, they had a weird mapping, not as close as the previous panel.
+
+
+Progress
+----
+[x] Finding out Panel mapping for just 1 panel outta two.
+[ ] 104x104 suport? aka 128x128
+[ ] change the output of Smart Library, this panel likes to have one long stroke. clock must shift out 256 times to fill up R1 G1 B1.
+[ ] Mapping.
+
