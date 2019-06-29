@@ -11,7 +11,7 @@ to
 #define CONVERT_PANELTYPE_TO_MATRIXROWPAIROFFSET(x) ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 13 : 0) | \
 #define CONVERT_PANELTYPE_TO_MATRIXSCANMOD(x)  ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 13 : 0) | \
 ```
-The hardware I use is ESP32.
+
 
 The LED Panel mapping looks like this.
 
@@ -61,6 +61,11 @@ My sketch does the skipping and the PC client that sends data to the ESP is just
 
 I compiled the windows client on Visual Studio 2015, but might just work on the latest since I don't have special stuff in there.
 After compile, you can find the ESP32 IP # in the serial at boot, or look into your router's DHCP list. enter that in that small window and press connect, pressing POI will popup a capture window that capture that region on your windows.
+
+Hardware
+-----
+The hardware I use is ESP32.
+And the library from https://github.com/pixelmatix/SmartMatrix/tree/teensylc
 
 Plans
 -----
