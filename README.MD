@@ -11,7 +11,9 @@ to
 #define CONVERT_PANELTYPE_TO_MATRIXROWPAIROFFSET(x) ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 13 : 0) | \
 #define CONVERT_PANELTYPE_TO_MATRIXSCANMOD(x)  ((x == SMARTMATRIX_HUB75_32ROW_MOD16SCAN ? 13 : 0) | \
 ```
-the LED Panel mapping looks like this.
+The hardware I use is ESP32.
+
+The LED Panel mapping looks like this.
 
 ```
 abcd
