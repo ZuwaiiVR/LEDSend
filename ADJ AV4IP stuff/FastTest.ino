@@ -2,6 +2,23 @@ void setup() {
   Serial.begin(115200);
   delay(100);
   Serial.print("yay");
+    #define R1_PIN  2
+    #define G1_PIN  15
+    #define B1_PIN  4
+    #define R2_PIN  16
+    #define G2_PIN  27
+    #define B2_PIN  17
+
+    #define A_PIN   5
+    #define B_PIN   18
+    #define C_PIN   19
+    #define D_PIN   21
+    #define E_PIN   12
+    #define LAT_PIN 26
+    #define OE_PIN  25
+
+    #define CLK_PIN 22
+  
   pinMode(2, OUTPUT);
   pinMode(15, OUTPUT);
   pinMode(4, OUTPUT);
@@ -58,35 +75,7 @@ void loop() {
    digitalWrite(19, a[2]);
    digitalWrite(21, a[3]);
 
-
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-    shiftOut(2, 22, MSBFIRST, dataTest);
-
-    shiftOut(2, 22, MSBFIRST, dataTesta);
+    shiftOut(2, 22, MSBFIRST, dataTest2);
     shiftOut(2, 22, MSBFIRST, dataTesta);
     shiftOut(2, 22, MSBFIRST, dataTestb);
     shiftOut(2, 22, MSBFIRST, dataTestc);
@@ -94,6 +83,35 @@ void loop() {
     shiftOut(2, 22, MSBFIRST, dataTeste);
     shiftOut(2, 22, MSBFIRST, dataTestf);
     shiftOut(2, 22, MSBFIRST, dataTestf);
+    
+    shiftOut(2, 22, MSBFIRST, dataTes3);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+
+    shiftOut(2, 22, MSBFIRST, dataTest4);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+
+    shiftOut(2, 22, MSBFIRST, dataTest5);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+    shiftOut(2, 22, MSBFIRST, dataTest);
+
+
     
     //delayMicroseconds(500);
     digitalWrite(26, HIGH);
