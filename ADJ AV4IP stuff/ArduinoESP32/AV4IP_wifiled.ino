@@ -23,9 +23,9 @@ RGB64x32MatrixPanel_I2S_DMA dma_display;
 #define CLK_PIN 22
 AsyncUDP udp;
 elapsedMillis fps;
-const char * ssid = "Zurabirb";
-//const char * ssid = "TanakaHime";
-const char * password = "kippende";
+const char * ssid = "your sidd";
+const char * password = "yourpass";
+
 bool display_incomplete_array = true;
 
 byte rgb_data[8112];
@@ -44,9 +44,6 @@ void setup() {
 
   Serial.begin(115200);
 
-  Serial.println("*****************************************************");
-  Serial.println(" HELLO !");
-  Serial.println("*****************************************************");
 
   dma_display.begin(R1_PIN, G1_PIN, B1_PIN, R2_PIN, G2_PIN, B2_PIN, A_PIN, B_PIN, C_PIN, D_PIN, E_PIN, LAT_PIN, OE_PIN, CLK_PIN );  // setup the LED matrix
   dma_display.setBrightness(75);
@@ -87,6 +84,7 @@ uint16_t rowoffset;
 uint16_t bri;
 elapsedMicros bench;
 int bench_res;
+
 void loop() {
 if(Serial.available()){
   byte in = Serial.read();
