@@ -23,9 +23,9 @@ RGB64x32MatrixPanel_I2S_DMA dma_display;
 #define CLK_PIN 22
 AsyncUDP udp;
 elapsedMillis fps;
-const char * ssid = "Zurabirb";
-//const char * ssid = "TanakaHime";
-const char * password = "kippende";
+const char * ssid = "yourssid";
+
+const char * password = "pass";
 bool display_incomplete_array = true;
 
 byte rgb_data[8112];
