@@ -23,9 +23,9 @@ RGB64x32MatrixPanel_I2S_DMA dma_display;
 #define CLK_PIN 22
 AsyncUDP udp;
 elapsedMillis fps;
-const char * ssid = "yourssid";
+const char * ssid = "your siid";
+const char * password = "your pass";
 
-const char * password = "pass";
 bool display_incomplete_array = true;
 
 byte rgb_data[8112];
@@ -49,8 +49,8 @@ void setup() {
   Serial.println("*****************************************************");
 
   dma_display.begin(R1_PIN, G1_PIN, B1_PIN, R2_PIN, G2_PIN, B2_PIN, A_PIN, B_PIN, C_PIN, D_PIN, E_PIN, LAT_PIN, OE_PIN, CLK_PIN );  // setup the LED matrix
-  dma_display.setBrightness(75);
-//  dma_display.flipDMABuffer();
+  dma_display.setBrightness(192);
+  //  dma_display.flipDMABuffer();
 
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -72,9 +72,9 @@ void setup() {
   g_ip += localip[3];
   Serial.println(g_ip); //reports IP to serial port
   do_wifistuff();
-        Serial.print("mem =");
-      Serial.print(ESP.getFreeHeap());
-      
+  Serial.print("mem =");
+  Serial.print(ESP.getFreeHeap());
+
 }
 uint16_t cnt;
 uint16_t dim;
@@ -87,27 +87,70 @@ uint16_t xx;
 uint16_t yy;
 uint16_t xr;
 uint16_t rowoffset;
-uint16_t bri;
+uint16_t bri=192;
+byte mas;
+float gam = 2;
 elapsedMicros bench;
 int bench_res;
 void loop() {
-if(Serial.available()){
-  byte in = Serial.read();
-  switch(in){
-    case 'a':
-    bri++;
-      dma_display.setBrightness(bri);
-      Serial.println(bri);
-      break;
+  if (Serial.available()) {
+    byte in = Serial.read();
+    switch (in) {
+      case 'a':
+        bri++;
+        dma_display.setBrightness(bri);
+        Serial.println(bri);
+        break;
+      case 'e':
+        bri += 64;
+        dma_display.setBrightness(bri);
+        Serial.println(bri);
+        break;
+         case 'r':
+        bri -= 64;
+        dma_display.setBrightness(bri);
+        Serial.println(bri);
+        break;
+        case 't':
+        bri += 128;
+        dma_display.setBrightness(bri);
+        Serial.println(bri);
+        break;
+        case 'y':
+        bri -= 128;
+        dma_display.setBrightness(bri);
+        Serial.println(bri);
+        break;
       case 's':
-      
-    bri--;
-      dma_display.setBrightness(bri);
-      Serial.println(bri);
-      break;
-      
+
+        bri--;
+        dma_display.setBrightness(bri);
+        Serial.println(bri);
+        break;
+
+      case 'q':
+        mas++;
+
+        Serial.println(mas);
+        break;
+      case 'w':
+       mas--;
+        Serial.println(mas);
+        break;
+
+              case 'z':
+              gam = gam+0.1;
+       dma_display.setGamma(gam);
+        Serial.println(gam);
+        break;
+                      case 'x':
+                      gam = gam-0.1;
+       dma_display.setGamma(gam);
+        Serial.println(gam);
+        break;
+
+    }
   }
-}
   /*
     for (int y = 0; y < 15; y++) {
       for (int x = 0; x < 256; x++) {
@@ -127,7 +170,7 @@ if(Serial.available()){
 
 
   if (r_capture[7] == true) {
-    if(fps > 1000){
+    if (fps > 1000) {
       fps = 0;
 
       Serial.print(" fps dis = ");
@@ -136,11 +179,11 @@ if(Serial.available()){
       Serial.print(bench_res);
       Serial.print(" fps pac = ");
       Serial.println(fps_packages);
-      
+
       fps_packages = 0;
-      fps_display=0;
+      fps_display = 0;
     }
-     
+
     fps_display++;
     for (int i = 0; i < 156; i += 3) {
       if (xr == 0) xr += 3;
@@ -152,34 +195,34 @@ if(Serial.available()){
       for (int o = 0; o < 7; o++) { //21
         rowoffset = 0;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr + 192, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr + 192, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
         rowoffset = 7;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr + 128, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr + 128, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
         rowoffset = 13;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr + 64, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr + 64, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
         rowoffset = 20;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr, o,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
       }
       /////// 2nd half of screen
       for (int o = 0; o < 7; o++) { //21
         rowoffset = 26;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr + 192, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr + 192, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
 
         rowoffset = 33;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr + 128, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr + 128, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
 
         rowoffset = 39;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr + 64, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr + 64, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
 
         rowoffset = 46;
         yy = (rowoffset + o) * 156;
-        dma_display.drawPixelRGB888(xr, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i]);
+        dma_display.drawPixelRGB888(xr, o + 8,  rgb_data_show[yy + i + 2], rgb_data_show[yy + i + 1], rgb_data_show[yy + i], mas);
       }
       if (xr > 64) {
         xr = 0;
@@ -190,8 +233,8 @@ if(Serial.available()){
 
     }
     // Serial.print(" l " );
-   dma_display.flipDMABuffer();
- 
+    dma_display.flipDMABuffer();
+
     r_capture[7] = false;
   }
 
