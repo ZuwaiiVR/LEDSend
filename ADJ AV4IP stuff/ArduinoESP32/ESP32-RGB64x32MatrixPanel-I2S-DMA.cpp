@@ -2,6 +2,9 @@
 
 // Credits: Louis Beaudoin <https://github.com/pixelmatix/SmartMatrix/tree/teensylc>
 // and Sprite_TM: 			https://www.esp32.com/viewtopic.php?f=17&t=3188 and https://www.esp32.com/viewtopic.php?f=13&t=3256
+ 
+
+
 
 void RGB64x32MatrixPanel_I2S_DMA::configureDMA(int r1_pin, int  g1_pin, int  b1_pin, int  r2_pin, int  g2_pin, int  b2_pin, int  a_pin, int   b_pin, int  c_pin, int  d_pin, int  e_pin, int  lat_pin, int   oe_pin, int clk_pin)
 {
@@ -15,7 +18,7 @@ void RGB64x32MatrixPanel_I2S_DMA::configureDMA(int r1_pin, int  g1_pin, int  b1_
         }
 
         int ramrequired = numDescriptorsPerRow * ROWS_PER_FRAME * ESP32_NUM_FRAME_BUFFERS * sizeof(lldesc_t);
-        //ramrequired += 64000; // HACK Hard Coded: Keep at least 64k free!
+       // ramrequired += 64000; // HACK Hard Coded: Keep at least 64k free!
         int largestblockfree = heap_caps_get_largest_free_block(MALLOC_CAP_DMA);
 
         Serial.printf("lsbMsbTransitionBit of %d requires %d RAM, %d available, leaving %d free: \r\n", lsbMsbTransitionBit, ramrequired, largestblockfree, largestblockfree - ramrequired);
@@ -61,7 +64,7 @@ void RGB64x32MatrixPanel_I2S_DMA::configureDMA(int r1_pin, int  g1_pin, int  b1_
 
         Serial.printf("lsbMsbTransitionBit of %d gives %d Hz refresh: \r\n", lsbMsbTransitionBit, actualRefreshRate);        
 
-        if (actualRefreshRate > 250) // HACK Hard Coded: Minimum frame rate of 150
+        if (actualRefreshRate > 50) // HACK Hard Coded: Minimum frame rate of 150
           break;
                   
 
@@ -187,7 +190,7 @@ void RGB64x32MatrixPanel_I2S_DMA::configureDMA(int r1_pin, int  g1_pin, int  b1_
 } // end initMatrixDMABuff
 
 /* Update a specific co-ordinate in the DMA buffer */
-void RGB64x32MatrixPanel_I2S_DMA::updateMatrixDMABuffer(int16_t x_coord, int16_t y_coord, uint16_t red, uint16_t green, uint16_t blue)
+void RGB64x32MatrixPanel_I2S_DMA::updateMatrixDMABuffer(int16_t x_coord, int16_t y_coord, uint16_t red, uint16_t green, uint16_t blue, uint8_t mast)
 {
   
     if ( !dma_configuration_success)
@@ -211,13 +214,15 @@ void RGB64x32MatrixPanel_I2S_DMA::updateMatrixDMABuffer(int16_t x_coord, int16_t
        
     for(int color_depth_idx=0; color_depth_idx<COLOR_DEPTH_BITS; color_depth_idx++)  // color depth - 8 iterations
     {
-		int maskoffset = 0;
+		int maskoffset = mast;
 		if (COLOR_DEPTH_BITS == 12)   // 36-bit color
-			maskoffset = 4;
+			maskoffset = mast;
 		else if (COLOR_DEPTH_BITS == 16) // 48-bit color
-			maskoffset = 0;
+			maskoffset = mast;
 		else if (COLOR_DEPTH_BITS == 8)  // 24-bit color
-			maskoffset = 0;
+			maskoffset = mast;
+		else if (COLOR_DEPTH_BITS == 10)  // 24-bit color
+			maskoffset = mast;
 			
 		uint16_t mask = (1 << (color_depth_idx + maskoffset)); // 24 bit color
 		//uint16_t mask = (1 << color_depth_idx); // 24 bit color
@@ -330,7 +335,7 @@ void RGB64x32MatrixPanel_I2S_DMA::updateMatrixDMABuffer(int16_t x_coord, int16_t
         if(x_coord%2){
           p->data[(x_coord)-1] = v;
         } else {
-          p->data[(x_coord)+1] = v;
+           p->data[(x_coord)+1] = v;
         } // end reordering
           
     } // color depth loop (8)
