@@ -140,13 +140,11 @@
 #define ESP32_NUM_FRAME_BUFFERS           2 
 #define ESP32_OE_OFF_CLKS_AFTER_LATCH     1
 #define ESP32_I2S_CLOCK_SPEED (20000000UL)
-#define COLOR_DEPTH 24
+#define COLOR_DEPTH 36
 
 /***************************************************************************************/            
 
 
-
- 
 
 // note: sizeof(data) must be multiple of 32 bits, as ESP32 DMA linked list buffer address pointer must be word-aligned.
 struct rowBitStruct {
@@ -213,6 +211,8 @@ inline rgb_24& rgb_24::operator=(const rgb_24& col) {
 	return *this;
 }
 
+static int  lightPowerMapGamma[256] = { 0,0,0 };
+
 static const uint16_t lightPowerMap16bit[256] = {
  
 	
@@ -269,6 +269,58 @@ static const uint8_t lightPowerMap8bit[256] = {
 	181, 183, 185, 187, 189, 191, 193, 196, 198, 200, 202, 204, 207, 209, 211, 214,
 	216, 218, 220, 223, 225, 228, 230, 232, 235, 237, 240, 242, 245, 247, 250, 252
 };
+
+static const uint16_t lightPowerMap12bit[256] = {
+  0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,
+  2,2,2,3,3,4,4,5,5,6,7,8,8,9,10,11,
+  12,13,15,16,17,18,20,21,23,25,26,28,30,32,34,36,
+  38,40,43,45,48,50,53,56,59,62,65,68,71,75,78,82,
+  85,89,93,97,101,105,110,114,119,123,128,133,138,143,149,154,
+  159,165,171,177,183,189,195,202,208,215,222,229,236,243,250,258,
+  266,274,282,290,298,306,315,324,332,341,351,360,370,379,389,399,
+  409,419,430,441,451,462,473,485,496,508,520,532,544,556,569,582,
+  595,608,621,634,648,662,676,690,705,719,734,749,764,780,795,811,
+  827,843,859,876,893,910,927,944,962,980,998,1016,1035,1053,1072,1091,
+  1111,1130,1150,1170,1190,1211,1231,1252,1273,1295,1316,1338,1360,1382,1405,1427,
+  1450,1474,1497,1521,1545,1569,1593,1618,1643,1668,1693,1719,1745,1771,1797,1824,
+  1851,1878,1905,1933,1960,1989,2017,2046,2075,2104,2133,2163,2193,2223,2254,2284,
+  2315,2347,2378,2410,2442,2475,2507,2540,2573,2607,2641,2675,2709,2744,2779,2814,
+  2849,2885,2921,2957,2994,3031,3068,3106,3144,3182,3220,3259,3298,3337,3376,3416,
+  3457,3497,3538,3579,3620,3662,3704,3746,3789,3832,3875,3919,3962,4007,4051,4095 };
+
+
+
+static const uint8_t lightPowerMap8bitlin[256] = {
+	0,1,2,3,4,5,6,7,
+8,9,10,11,12,13,14,15,16,
+17,18,19,20,21,22,23,24,25,
+26,27,28,29,30,31,32,33,34,
+35,36,37,38,39,40,41,42,43,
+44,45,46,47,48,49,50,51,52,
+53,54,55,56,57,58,59,60,61,
+62,63,64,65,66,67,68,69,70,
+71,72,73,74,75,76,77,78,79,
+80,81,82,83,84,85,86,87,88,
+89,90,91,92,93,94,95,96,97,
+98,99,100,101,102,103,104,105,106,
+107,108,109,110,111,112,113,114,115,
+116,117,118,119,120,121,122,123,124,
+125,126,127,128,129,130,131,132,133,
+134,135,136,137,138,139,140,141,142,
+143,144,145,146,147,148,149,150,151,
+152,153,154,155,156,157,158,159,160,
+161,162,163,164,165,166,167,168,169,
+170,171,172,173,174,175,176,177,178,
+179,180,181,182,183,184,185,186,187,
+188,189,190,191,192,193,194,195,196,
+197,198,199,200,201,202,203,204,205,
+206,207,208,209,210,211,212,213,214,
+215,216,217,218,219,220,221,222,223,
+224,225,226,227,228,229,230,231,232,
+233,234,235,236,237,238,239,240,241,
+242,243,244,245,246,247,248,249,250,
+251,252,253,254,255
+};
 ////////////////////////////////////////
 
 ///////////////////////////////////////
@@ -289,7 +341,7 @@ void colorCorrection(const RGB_IN& in, rgb_24& out) {
 class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
   // ------- PUBLIC -------
   public:
-    RGB64x32MatrixPanel_I2S_DMA(bool _doubleBuffer = false) // Double buffer is disabled by default. Any change will display next active DMA buffer output (very quickly). NOTE: Not Implemented
+    RGB64x32MatrixPanel_I2S_DMA(bool _doubleBuffer = true) // Double buffer is disabled by default. Any change will display next active DMA buffer output (very quickly). NOTE: Not Implemented
       : Adafruit_GFX(MATRIX_WIDTH, MATRIX_HEIGHT), doubleBuffer(_doubleBuffer)  {
       
         backbuf_id = 0;
@@ -324,10 +376,10 @@ class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
       Serial.printf("Using pin %d for the OE_PIN\n",  dma_oe_pin);    
       Serial.printf("Using pin %d for the CLK_PIN\n", dma_clk_pin); 
 #endif    
-
+	  setGamma(2.8f);
 
 	  // Flush the DMA buffers prior to configuring DMA - Avoid visual artefacts on boot.
-      flushDMAbuffer();  
+     flushDMAbuffer();  
       flipDMABuffer(); // flip to backbuffer 1
       flushDMAbuffer();
       flipDMABuffer(); // backbuffer 0
@@ -335,7 +387,7 @@ class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
       // Setup the ESP32 DMA Engine. Sprite_TM built this stuff.
       configureDMA(dma_r1_pin, dma_g1_pin, dma_b1_pin, dma_r2_pin, dma_g2_pin, dma_b2_pin, dma_a_pin,  dma_b_pin, dma_c_pin, dma_d_pin, dma_e_pin, dma_lat_pin,  dma_oe_pin,   dma_clk_pin ); //DMA and I2S configuration and setup
 
-	  showDMABuffer(); // show 0
+	 showDMABuffer(); // show 0
 	  
     }
     
@@ -343,13 +395,14 @@ class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
  
     
     // Draw pixels
+	void setGamma(float value);
     virtual void drawPixel(int16_t x, int16_t y, uint16_t color);   // overwrite adafruit implementation
     virtual void fillScreen(uint16_t color);                        // overwrite adafruit implementation
             void clearScreen() { fillScreen(0); } 
     void drawPixelRGB565(int16_t x, int16_t y, uint16_t color);
-    void drawPixelRGB888(int16_t x, int16_t y, uint8_t r, uint8_t g, uint8_t b);
+    void drawPixelRGB888(int16_t x, int16_t y, uint16_t r, uint16_t g, uint16_t b,uint8_t);
     void drawPixelRGB24(int16_t x, int16_t y, rgb_24 color);
-    
+	
     // TODO: Draw a frame! Oooh.
     //void writeRGB24Frame2DMABuffer(rgb_24 *framedata, int16_t frame_width, int16_t frame_height);
 
@@ -407,7 +460,7 @@ class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
             for (int x=0;x<MATRIX_WIDTH; x++)
             {
               //Serial.printf("\r\nFlushing x, y coord %d, %d", x, y);
-              updateMatrixDMABuffer( x, y, 0, 0, 0);
+              updateMatrixDMABuffer( x, y, 0, 0, 0,0);
             }
     }
 
@@ -415,11 +468,11 @@ class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
 
     
     // Update a specific pixel in the DMA buffer to a colour 
-    void updateMatrixDMABuffer(int16_t x, int16_t y, uint16_t red, uint16_t green, uint16_t blue);
+    void updateMatrixDMABuffer(int16_t x, int16_t y, uint16_t red, uint16_t green, uint16_t blue, uint8_t mast);
    
     // Update the entire DMA buffer (aka. The RGB Panel) a certain colour (wipe the screen basically)
     void updateMatrixDMABuffer(uint8_t red, uint8_t green, uint8_t blue);
-    	
+    	 
     // Pixel data is organized from LSB to MSB sequentially by row, from row 0 to row matrixHeight/matrixRowsInParallel (two rows of pixels are refreshed in parallel)
     frameStruct *matrixUpdateFrames;
 	
@@ -438,7 +491,22 @@ class RGB64x32MatrixPanel_I2S_DMA : public Adafruit_GFX {
 
 /***************************************************************************************/   
 // https://stackoverflow.com/questions/5057021/why-are-c-inline-functions-in-the-header
+
 /* 2. functions declared in the header must be marked inline because otherwise, every translation unit which includes the header will contain a definition of the function, and the linker will complain about multiple definitions (a violation of the One Definition Rule). The inline keyword suppresses this, allowing multiple translation units to contain (identical) definitions. */
+
+inline void RGB64x32MatrixPanel_I2S_DMA::setGamma(float value) //added function by Appel.
+{
+	float gamma = value; // Correction factor
+	int   max_in = 255, // Top end of INPUT range
+		max_out = 4096; // Top end of OUTPUT range
+	if (COLOR_DEPTH == 36) max_out = 4095;
+	if (COLOR_DEPTH == 24) max_out = 255;
+
+	for (int i = 0; i <= max_in; i++) {
+		 lightPowerMapGamma[i] = (int)(pow((float)i / (float)max_in, gamma) * max_out + 0.5);
+	}
+}
+
 inline void RGB64x32MatrixPanel_I2S_DMA::drawPixel(int16_t x, int16_t y, uint16_t color) // adafruit virtual void override
 {
   drawPixelRGB565( x, y, color);
@@ -460,19 +528,24 @@ inline void RGB64x32MatrixPanel_I2S_DMA::drawPixelRGB565(int16_t x, int16_t y, u
   uint8_t g = ((((color >> 5) & 0x3F) * 259) + 33) >> 6;
   uint8_t b = (((color & 0x1F) * 527) + 23) >> 6;
   
-  updateMatrixDMABuffer( x, y, r, g, b);
+ // updateMatrixDMABuffer( x, y, r, g, b);
 }
 
-inline void RGB64x32MatrixPanel_I2S_DMA::drawPixelRGB888(int16_t x, int16_t y, uint8_t r, uint8_t g,uint8_t b) 
+
+inline void RGB64x32MatrixPanel_I2S_DMA::drawPixelRGB888(int16_t x, int16_t y, uint16_t r, uint16_t g,uint16_t b,uint8_t maske) 
 {
-//	updateMatrixDMABuffer(x, y, lightPowerMap16bit[r]<8, lightPowerMap16bit[g] < 8, lightPowerMap16bit[b] < 8);
-	updateMatrixDMABuffer(x, y, lightPowerMap8bit[r], lightPowerMap8bit[g], lightPowerMap8bit[b]);
+//if(COLOR_DEPTH == 36)	updateMatrixDMABuffer(x, y, lightPowerMap12bit[r], lightPowerMap12bit[g] , lightPowerMap12bit[b] , maske);
+//if (COLOR_DEPTH == 24)	updateMatrixDMABuffer(x, y, lightPowerMap8bitlin[r], lightPowerMap8bitlin[g], lightPowerMap8bitlin[b], maske);
+ updateMatrixDMABuffer(x, y, lightPowerMapGamma[r], lightPowerMapGamma[g], lightPowerMapGamma[b], maske);
+
+//updateMatrixDMABuffer(x, y, lightPowerMap8bit[r], lightPowerMap8bit[g], lightPowerMap8bit[b], maske);
+	//updateMatrixDMABuffer(x, y, (uint8_t)r, (uint8_t)g, (uint8_t)b,maske);
 }
 
 inline void RGB64x32MatrixPanel_I2S_DMA::drawPixelRGB24(int16_t x, int16_t y, rgb_24 color) 
 {
-  updateMatrixDMABuffer( x, y, color.red, color.green, color.blue);
-}
+ // updateMatrixDMABuffer( x, y, color.red, color.green, color.blue);
+}	
 
 
 // Pass 8-bit (each) R,G,B, get back 16-bit packed color
